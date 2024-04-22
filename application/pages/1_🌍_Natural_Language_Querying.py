@@ -21,6 +21,9 @@ def sample_question_clicked(sample):
     """Update the selected_sample variable with the text of the clicked button"""
     st.session_state['selected_sample'] = sample
 
+def update_question_clicked():
+    new_sql = st.session_state.update_sql
+    st.session_state['selected_sample'] = new_sql
 
 def upvote_clicked(question, sql, env_vars):
     # HACK: configurable opensearch endpoint
@@ -28,7 +31,6 @@ def upvote_clicked(question, sql, env_vars):
     current_profile = st.session_state.current_profile
     VectorStore.add_sample(current_profile, question, sql)
     logger.info(f'up voted "{question}" with sql "{sql}"')
-
 
 def do_visualize_results(nlq_chain):
     with st.chat_message("assistant"):
@@ -144,6 +146,9 @@ def main():
 
     if 'option' not in st.session_state:
         st.session_state['option'] = 'Text2SQL'
+    
+    if 'update_sql_query_result' not in st.session_state:
+        st.session_state.update_sql_query_result = None
 
     if 'selected_sample' not in st.session_state:
         st.session_state['selected_sample'] = ''
@@ -368,7 +373,7 @@ def main():
                     st.markdown('You can provide feedback:')
 
                     # add a upvote(green)/downvote button with logo
-                    feedback = st.columns(2)
+                    feedback = st.columns(3)
                     feedback[0].button('👍 Upvote (save as embedding for retrieval)', type='secondary',
                                        use_container_width=True,
                                        on_click=upvote_clicked,
@@ -379,8 +384,10 @@ def main():
                     if feedback[1].button('👎 Downvote', type='secondary', use_container_width=True):
                         # do something here
                         pass
+
                 else:
                     st.markdown('Your query statement is currently not supported by the system')
+                
 
             if visualize_results and search_intent_flag:
                 do_visualize_results(current_nlq_chain)
@@ -403,6 +410,13 @@ def main():
                                     use_container_width=True,
                                     on_click=sample_question_clicked,
                                     args=[gen_sq_list[2]])
+
+            update_sql_input = st.text_input('You can update generated SQL and rerun it:', current_nlq_chain.get_generated_sql(), key='update_sql')
+            update_sql_button = st.columns(1)
+            update_sql_button[0].button('Update SQL and rerun', type='secondary',
+                                use_container_width=True,
+                                on_click=update_question_clicked,
+                                args=[])
         else:
             st.error("Please enter a valid query.")
 
