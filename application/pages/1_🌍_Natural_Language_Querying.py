@@ -373,7 +373,7 @@ def main():
                     st.markdown('You can provide feedback:')
 
                     # add a upvote(green)/downvote button with logo
-                    feedback = st.columns(3)
+                    feedback = st.columns(2)
                     feedback[0].button('👍 Upvote (save as embedding for retrieval)', type='secondary',
                                        use_container_width=True,
                                        on_click=upvote_clicked,

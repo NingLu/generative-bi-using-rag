@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from nlq.business.connection import ConnectionManagement
 from utils.apis import query_from_sql_pd
-from loguru import logger
+
 
 class NLQChain:
 
