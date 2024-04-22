@@ -146,9 +146,6 @@ def main():
 
     if 'option' not in st.session_state:
         st.session_state['option'] = 'Text2SQL'
-    
-    if 'update_sql_query_result' not in st.session_state:
-        st.session_state.update_sql_query_result = None
 
     if 'selected_sample' not in st.session_state:
         st.session_state['selected_sample'] = ''
